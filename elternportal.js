@@ -59,6 +59,7 @@ function haveOutbound() {
 
 // Downloads from file.url, setting file.filename and file.content.
 async function downloadFile(file, options) {
+  await new Promise(resolve => setTimeout(resolve, 500)); // I get "Error: socket hang up" when downloading too fast
   // Collect buffers and use Buffer.concat() to avoid chunk size arithmetics.
   let buffers = [];
   // It seems attachment downloads don't need to be throttled.
