@@ -825,6 +825,7 @@ async function processNewEmail() {
     }
 
     const parsedMessage = await simpleParser(message.source);
+    LOG.debug('Received email from %s: %s', parsedMessage.from.text || '-', parsedMessage.subject || '-');
 
     const recipients = [].concat(
         parsedMessage.to ? parsedMessage.to.value : [],
