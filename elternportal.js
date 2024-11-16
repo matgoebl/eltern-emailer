@@ -503,9 +503,9 @@ async function readNoticeBoard(page, previousHashes) {
   // archived since the last run (e.g. vacation or other local downtime). To make sure hashes are
   // stable we need to do some contortions.
   const subjects = await page.$$eval('div.well h4', hh => hh.map(h => h.innerHTML));
-  const currentContents = await page.$$eval('div.well h4 ~ p', pp => pp.map(p => p.outerHTML));
+  const currentContents = await page.$$eval('div.well h4 + p', pp => pp.map(p => p.outerHTML));
   const archivedContents = await page.$$eval(
-      'div.arch div.well div.row ~ div.row p:first-child',
+      'div.arch div.well div.row + div.row',
       pp => pp.map(p => p.outerHTML));
   const contents = currentContents.concat(archivedContents);
   if (subjects.length != contents.length) {
