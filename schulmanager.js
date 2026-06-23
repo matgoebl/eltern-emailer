@@ -54,7 +54,7 @@ class Schulmanager {
 
     let winner = await Promise.race([
       this.#page.waitForSelector('div.modal-dialog div.modal-content'), // school selection dialog
-      this.#page.waitForSelector('a.dropdown-item.module-label"]'),     // successful login
+      this.#page.waitForSelector('a.dropdown-item.module-label'),     // successful login
       this.#page.waitForSelector('form.login-form div.alert-danger')    // invalid credentials
     ]);
     if (await winner.evaluate(e => e.classList.contains('alert-danger'))) {
@@ -196,10 +196,10 @@ class Schulmanager {
       // Wait for modal dialog to show.
       await this.#page.waitForSelector('span.close-button');
 
-      const content = await this.#page.$eval('div.letter-title ~ div', (d) => {
+      const content = await this.#page.$$eval('div.letter-title ~ div', divs => {
         return {
-          text: d.innerText,
-          html: `<!DOCTYPE html><html><head></head><body>${d.innerHTML}</body></html>`
+          text: divs.map(d => d.innerText).join('\n'),
+          html: `<!DOCTYPE html><html><head></head><body>${divs.map(d => d.innerHTML)}</body></html>`
         };
       });
       letter.text = content.text;
@@ -210,7 +210,7 @@ class Schulmanager {
       // Retrieve attachments, if any. This doesn't use the same method as Eltern-Portal, i.e. a
       // simple HTTP request, because I found no good way of getting at the letter ID (and that's only
       // one of multiple parameters). 
-      const attachments = await this.#page.$$('div.letter-title ~ div:last-child label ~ div a');
+      const attachments = await this.#page.$$('div.letter-title ~ div label ~ div a');
       LOG.info(`Found ${attachments.length} attachments`);
 
       let client = null;
